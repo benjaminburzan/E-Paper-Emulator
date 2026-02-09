@@ -5,7 +5,7 @@
 [![Flask](https://img.shields.io/badge/Flask-Web%20Server-lightgrey.svg)](https://flask.palletsprojects.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-An emulator for Waveshare E-Paper Display (EPD) screens. Develop and test e-paper applications without hardware using either a native GUI window (Tkinter) or a web-based interface (Flask). Supports 19+ display models in both color and monochrome modes.
+A drop-in replacement for the Waveshare E-Paper Display (EPD) Python library that renders to a Tkinter window or Flask web server instead of hardware. Develop, test, and demo e-paper UIs on any machine — no display module required. Supports 19+ models in color and monochrome.
 
 ![image](https://github.com/infinition/EPD-Emulator/assets/37984399/6006d07a-e760-46c8-9ded-731a590179f0)
 
