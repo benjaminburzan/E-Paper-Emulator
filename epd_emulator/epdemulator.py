@@ -1,12 +1,9 @@
 import json
-from PIL import Image, ImageTk, ImageDraw
-import tkinter as tk
-from flask import Flask, render_template_string, send_file
+from PIL import Image, ImageDraw
 import io
-import threading
-import webbrowser
-import time
 import os
+import threading
+import time
 import traceback
 
 currentdir = os.path.dirname(os.path.realpath(__file__)) 
@@ -24,7 +21,7 @@ class EPD:
 
         self.image = Image.new(self.image_mode, (self.width, self.height), 'white' if self.use_color else 255) 
         self.use_tkinter = use_tkinter
-        self.update_interval = update_interval * 1000 if not use_tkinter else update_interval
+        self.update_interval = update_interval
         print(f"update_interval: {self.update_interval}")
 
         if self.use_tkinter:
@@ -46,6 +43,10 @@ class EPD:
 
 
     def init_tkinter(self):
+        import tkinter as tk
+        from PIL import ImageTk
+        self.tk = tk
+        self.ImageTk = ImageTk
         self.root = tk.Tk()
         self.root.title(f"Waveshare {self.width}x{self.height} EPD Emulator")
         self.canvas = tk.Canvas(self.root, width=self.width, height=self.height)
@@ -56,15 +57,19 @@ class EPD:
         self.update_tkinter()
 
     def update_tkinter(self):
-        self.tk_image = ImageTk.PhotoImage(self.image)
+        self.tk_image = self.ImageTk.PhotoImage(self.image)
         self.canvas.itemconfig(self.image_on_canvas, image=self.tk_image)
         self.root.update()
 
-        self.root.after(self.update_interval, self.update_tkinter)
+        self.root.after(int(self.update_interval * 1000), self.update_tkinter)
 
 
 
     def init_flask(self):
+        from flask import Flask, render_template_string, send_file
+        import webbrowser
+        self.webbrowser = webbrowser
+        self.send_file = send_file
         self.app = Flask(__name__)
 
         @self.app.route('/')
@@ -87,7 +92,7 @@ class EPD:
                             image.src = "screen.png?t=" + new Date().getTime(); // Prevent caching
                         }}
 
-                        setInterval(updateImage, {self.update_interval}); 
+                        setInterval(updateImage, {int(self.update_interval * 1000)});
                     </script>
                 </head>
                 <body onload="updateImage()">
@@ -99,7 +104,7 @@ class EPD:
         @self.app.route('/screen.png')
         def display_image():
             try:
-                return send_file(os.path.join(os.path.dirname(__file__), 'screen.png'), mimetype='image/png')
+                return self.send_file(io.BytesIO(self.image_bytes.getvalue()), mimetype='image/png')
             except Exception as e:
                 traceback.print_exc()
                 return "Internal Server Error", 500
@@ -109,7 +114,7 @@ class EPD:
 
 
     def run_flask(self):
-        webbrowser.open("http://127.0.0.1:5000/")
+        self.webbrowser.open("http://127.0.0.1:5000/")
         self.app.run(port=5000, debug=False, use_reloader=False)
 
 
@@ -117,7 +122,6 @@ class EPD:
     def update_image_bytes(self):
         self.image_bytes = io.BytesIO()
         self.image.save(self.image_bytes, format='PNG')
-        self.image.save(os.path.join(os.path.dirname(__file__), 'screen.png'))  
 
 
     def start_image_update_loop(self):
@@ -133,15 +137,15 @@ class EPD:
         print("EPD initialized")
 
     def Clear(self, color):
-        self.image = Image.new(self.image_mode, (self.width, self.height), "white")
+        self.image = Image.new(self.image_mode, (self.width, self.height), color)
         self.draw = ImageDraw.Draw(self.image)  
         self.display(self.getbuffer(self.image))
         print("Screen cleared")
 
     def display(self, image_buffer):
         if self.use_tkinter:
-            self.tk_image = ImageTk.PhotoImage(self.image)  
-            self.canvas.itemconfig(self.image_on_canvas, image=self.tk_image)  
+            self.tk_image = self.ImageTk.PhotoImage(self.image)
+            self.canvas.itemconfig(self.image_on_canvas, image=self.tk_image)
             self.root.update()  
         else:
             self.update_image_bytes()

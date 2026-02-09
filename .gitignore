@@ -23,5 +23,5 @@ env/
 .DS_Store
 Thumbs.db
 
-# Project-specific
-epd_emulator/screen.png
+# Testing
+.pytest_cache/

@@ -59,7 +59,7 @@ pip install -e ".[dev]"
 ### Run the Demo
 
 ```bash
-python "waveshare_emulator demo.py"
+python demo.py
 ```
 
 The demo script shows how to initialize the emulator, draw shapes and text, and display images.
@@ -164,7 +164,7 @@ EPD-Emulator/
 │   ├── __init__.py
 │   └── test_config.py
 ├── .github/                    # GitHub templates and workflows
-├── waveshare_emulator demo.py  # Demo script
+├── demo.py                     # Demo script
 ├── pyproject.toml              # Python packaging configuration
 ├── CONTRIBUTING.md             # Contribution guide
 ├── SECURITY.md                 # Security policy
