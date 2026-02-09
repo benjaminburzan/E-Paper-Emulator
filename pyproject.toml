@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "epd-emulator"
+version = "1.0.0"
+description = "Emulator for Waveshare E-Paper Display (EPD) screens"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+authors = [
+    { name = "Benjamin Burzan" },
+]
+keywords = ["e-paper", "epd", "waveshare", "emulator", "display"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = [
+    "Pillow>=10.0.0",
+    "Flask>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "flake8>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/benjaminburzan/EPD-Emulator"
+Repository = "https://github.com/benjaminburzan/EPD-Emulator"
+Issues = "https://github.com/benjaminburzan/EPD-Emulator/issues"
+
+[tool.setuptools.packages.find]
+include = ["epd_emulator*"]
+
+[tool.setuptools.package-data]
+epd_emulator = ["config/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

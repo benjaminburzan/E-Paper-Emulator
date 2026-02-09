@@ -21,18 +21,6 @@ An emulator for Waveshare E-Paper Display (EPD) screens. Develop and test e-pape
 - [Credits](#credits)
 - [License](#license)
 
----
-
-## Quick Start
-
-> **TL;DR** - Get it running in 3 steps:
-
-1. **Clone this repo** and install dependencies (see [Installation](#installation))
-2. **Choose your EPD model** and rendering mode in the demo script
-3. **Run it:** `python "waveshare_emulator demo.py"`
-
----
-
 ## Features
 
 - **Dual Rendering Modes**: Tkinter (native GUI window) or Flask (web-based, accessible via browser)
@@ -43,7 +31,6 @@ An emulator for Waveshare E-Paper Display (EPD) screens. Develop and test e-pape
 - **Drawing API**: Text, rectangles, lines, ellipses, and image pasting
 - **Drop-in Replacement**: Use the same API as the Waveshare EPD library for seamless development
 
----
 
 ## Installation
 
@@ -57,18 +44,15 @@ cd EPD-Emulator
 ### 2. Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install .
 ```
 
-**Dependencies:**
+For development (includes pytest and flake8):
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| Pillow | >= 10.0.0 | Image processing and drawing |
-| Flask | >= 3.0.0 | Web-based display rendering |
-| Tkinter | Built-in | Native GUI window rendering |
+```bash
+pip install -e ".[dev]"
+```
 
----
 
 ## Usage
 
@@ -111,7 +95,6 @@ epd.display(image_buffer)
 - **Flask (default)**: Opens `http://127.0.0.1:5000/` in your browser. Set `use_tkinter=False`.
 - **Tkinter**: Opens a native desktop window. Set `use_tkinter=True`.
 
----
 
 ## Configuration
 
@@ -139,7 +122,6 @@ Each display model is defined by a JSON file in `epd_emulator/config/`:
 }
 ```
 
----
 
 ## Supported Display Models
 
@@ -165,31 +147,30 @@ Each display model is defined by a JSON file in `epd_emulator/config/`:
 | `epd11in6` | 960x640 | 11.6" |
 | `epd12in48` | 1304x984 | 12.48" |
 
----
 
 ## File Structure
 
 ```
 EPD-Emulator/
 ├── epd_emulator/               # Main package
+│   ├── __init__.py             # Package entry point
 │   ├── epdemulator.py          # Core EPD emulator class
 │   └── config/                 # EPD model JSON configurations
 │       ├── epd1in54.json
 │       ├── epd2in13.json
 │       ├── ...
 │       └── epd12in48.json
-├── fonts/                      # Font resources
-│   └── Arial.ttf
-├── images/                     # Sample images for demo
-│   ├── bjorn.bmp
-│   └── bjorn1.bmp
+├── tests/                      # Test suite
+│   ├── __init__.py
+│   └── test_config.py
+├── .github/                    # GitHub templates and workflows
 ├── waveshare_emulator demo.py  # Demo script
-├── requirements.txt            # Python dependencies
-├── AGENTS.md                   # AI agent guidelines
+├── pyproject.toml              # Python packaging configuration
+├── CONTRIBUTING.md             # Contribution guide
+├── SECURITY.md                 # Security policy
 └── LICENSE                     # MIT License
 ```
 
----
 
 ## Credits
 
