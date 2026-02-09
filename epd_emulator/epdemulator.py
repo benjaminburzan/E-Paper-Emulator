@@ -6,20 +6,26 @@ import threading
 import time
 import traceback
 
-currentdir = os.path.dirname(os.path.realpath(__file__)) 
+currentdir = os.path.dirname(os.path.realpath(__file__))
+
 
 class EPD:
-    def __init__(self, config_file="epd2in13", use_tkinter=False, use_color=False, update_interval=2, reverse_orientation=False): 
+    def __init__(self, config_file="epd2in13", use_tkinter=False,
+                 use_color=False, update_interval=2,
+                 reverse_orientation=False):
         config_path = os.path.join(currentdir, 'config', f'{config_file}.json')
         self.load_config(config_path)
-        
-        self.use_color = use_color  
-        self.image_mode = 'RGB' if self.use_color else '1'  
+
+        self.use_color = use_color
+        self.image_mode = 'RGB' if self.use_color else '1'
 
         if reverse_orientation:
             self.width, self.height = self.height, self.width
 
-        self.image = Image.new(self.image_mode, (self.width, self.height), 'white' if self.use_color else 255) 
+        self.image = Image.new(
+            self.image_mode, (self.width, self.height),
+            'white' if self.use_color else 255
+        )
         self.use_tkinter = use_tkinter
         self.update_interval = update_interval
         print(f"update_interval: {self.update_interval}")
@@ -32,7 +38,6 @@ class EPD:
 
         self.draw = ImageDraw.Draw(self.image)
 
-
     def load_config(self, config_file):
         with open(config_file, 'r') as f:
             config = json.load(f)
@@ -41,19 +46,24 @@ class EPD:
             self.color = config.get('color', 'white')
             self.text_color = config.get('text_color', 'black')
 
-
     def init_tkinter(self):
         import tkinter as tk
         from PIL import ImageTk
         self.tk = tk
         self.ImageTk = ImageTk
         self.root = tk.Tk()
-        self.root.title(f"Waveshare {self.width}x{self.height} EPD Emulator")
-        self.canvas = tk.Canvas(self.root, width=self.width, height=self.height)
+        self.root.title(
+            f"Waveshare {self.width}x{self.height} EPD Emulator"
+        )
+        self.canvas = tk.Canvas(
+            self.root, width=self.width, height=self.height
+        )
         self.canvas.pack()
         self.tk_image = ImageTk.PhotoImage(self.image)
-        self.image_on_canvas = self.canvas.create_image(0, 0, anchor=tk.NW, image=self.tk_image)
-        
+        self.image_on_canvas = self.canvas.create_image(
+            0, 0, anchor=tk.NW, image=self.tk_image
+        )
+
         self.update_tkinter()
 
     def update_tkinter(self):
@@ -61,9 +71,9 @@ class EPD:
         self.canvas.itemconfig(self.image_on_canvas, image=self.tk_image)
         self.root.update()
 
-        self.root.after(int(self.update_interval * 1000), self.update_tkinter)
-
-
+        self.root.after(
+            int(self.update_interval * 1000), self.update_tkinter
+        )
 
     def init_flask(self):
         from flask import Flask, render_template_string, send_file
@@ -89,7 +99,7 @@ class EPD:
                     <script>
                         function updateImage() {{
                             var image = document.getElementById("screenImage");
-                            image.src = "screen.png?t=" + new Date().getTime(); // Prevent caching
+                            image.src = "screen.png?t=" + new Date().getTime();
                         }}
 
                         setInterval(updateImage, {int(self.update_interval * 1000)});
@@ -104,25 +114,23 @@ class EPD:
         @self.app.route('/screen.png')
         def display_image():
             try:
-                return self.send_file(io.BytesIO(self.image_bytes.getvalue()), mimetype='image/png')
-            except Exception as e:
+                return self.send_file(
+                    io.BytesIO(self.image_bytes.getvalue()),
+                    mimetype='image/png'
+                )
+            except Exception:
                 traceback.print_exc()
                 return "Internal Server Error", 500
 
         threading.Thread(target=self.run_flask).start()
 
-
-
     def run_flask(self):
         self.webbrowser.open("http://127.0.0.1:5000/")
         self.app.run(port=5000, debug=False, use_reloader=False)
 
-
-
     def update_image_bytes(self):
         self.image_bytes = io.BytesIO()
         self.image.save(self.image_bytes, format='PNG')
-
 
     def start_image_update_loop(self):
         def update_loop():
@@ -132,28 +140,29 @@ class EPD:
 
         threading.Thread(target=update_loop, daemon=True).start()
 
-
     def init(self):
         print("EPD initialized")
 
     def Clear(self, color):
-        self.image = Image.new(self.image_mode, (self.width, self.height), color)
-        self.draw = ImageDraw.Draw(self.image)  
+        self.image = Image.new(
+            self.image_mode, (self.width, self.height), color
+        )
+        self.draw = ImageDraw.Draw(self.image)
         self.display(self.getbuffer(self.image))
         print("Screen cleared")
 
     def display(self, image_buffer):
         if self.use_tkinter:
             self.tk_image = self.ImageTk.PhotoImage(self.image)
-            self.canvas.itemconfig(self.image_on_canvas, image=self.tk_image)
-            self.root.update()  
+            self.canvas.itemconfig(
+                self.image_on_canvas, image=self.tk_image
+            )
+            self.root.update()
         else:
             self.update_image_bytes()
 
-
     def displayPartial(self, image_buffer):
         self.display(image_buffer)
-
 
     def get_frame_buffer(self, draw):
         return self.getbuffer(self.image)
@@ -191,4 +200,3 @@ class EPD:
     def paste_image(self, image, box=None, mask=None):
         self.image.paste(image, box, mask)
         self.display(self.getbuffer(self.image))
-
