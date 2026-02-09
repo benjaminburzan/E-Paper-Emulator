@@ -28,7 +28,6 @@ class EPD:
         )
         self.use_tkinter = use_tkinter
         self.update_interval = update_interval
-        print(f"update_interval: {self.update_interval}")
 
         if self.use_tkinter:
             self.init_tkinter()
@@ -49,7 +48,6 @@ class EPD:
     def init_tkinter(self):
         import tkinter as tk
         from PIL import ImageTk
-        self.tk = tk
         self.ImageTk = ImageTk
         self.root = tk.Tk()
         self.root.title(
@@ -79,7 +77,6 @@ class EPD:
         from flask import Flask, render_template_string, send_file
         import webbrowser
         self.webbrowser = webbrowser
-        self.send_file = send_file
         self.app = Flask(__name__)
 
         @self.app.route('/')
@@ -114,7 +111,7 @@ class EPD:
         @self.app.route('/screen.png')
         def display_image():
             try:
-                return self.send_file(
+                return send_file(
                     io.BytesIO(self.image_bytes.getvalue()),
                     mimetype='image/png'
                 )
