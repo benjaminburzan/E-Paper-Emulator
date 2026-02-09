@@ -5,7 +5,7 @@
 [![Flask](https://img.shields.io/badge/Flask-Web%20Server-lightgrey.svg)](https://flask.palletsprojects.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-A drop-in replacement for the Waveshare E-Paper Display (EPD) Python library that renders to a Tkinter window or Flask web server instead of hardware. Develop, test, and demo e-paper UIs on any machine — no display module required. Supports 19+ models in color and monochrome.
+A drop-in replacement for the Waveshare E-Paper Display (EPD) Python library that renders to a Tkinter window or Flask web server instead of hardware. Develop, test, and demo e-paper UIs on any machine — no display module required. Supports 21+ models in color and monochrome.
 
 ![image](https://github.com/infinition/EPD-Emulator/assets/37984399/6006d07a-e760-46c8-9ded-731a590179f0)
 
@@ -25,7 +25,7 @@ A drop-in replacement for the Waveshare E-Paper Display (EPD) Python library tha
 
 - **Dual Rendering Modes**: Tkinter (native GUI window) or Flask (web-based, accessible via browser)
 - **Color and Monochrome**: Simulate both color and monochrome e-paper displays
-- **19+ EPD Models**: Pre-configured JSON files for a wide range of Waveshare displays
+- **21+ EPD Models**: Pre-configured JSON files for a wide range of Waveshare displays
 - **Display Orientation**: Normal and reverse orientation support
 - **Configurable Refresh Rate**: Adjustable update intervals for the simulation
 - **Drawing API**: Text, rectangles, lines, ellipses, and image pasting
@@ -131,6 +131,8 @@ Each display model is defined by a JSON file in `epd_emulator/config/`:
 | `epd2in7` | 176x264 | 2.7" |
 | `epd2in9` | 128x296 | 2.9" |
 | `epd2in13` | 122x250 | 2.13" |
+| `epd2in13bc` | 122x250 | 2.13" (B/C) |
+| `epd2in13d` | 104x212 | 2.13" (D) |
 | `epd2in13v2` | 122x250 | 2.13" (V2) |
 | `epd2in66` | 152x296 | 2.66" |
 | `epd3in52` | 240x360 | 3.52" |
