@@ -5,7 +5,7 @@ import os
 import glob
 import pytest
 
-CONFIG_DIR = os.path.join(os.path.dirname(__file__), "..", "epd_emulator", "config")
+CONFIG_DIR = os.path.join(os.path.dirname(__file__), "..", "epaper_emulator", "config")
 REQUIRED_KEYS = {"name", "width", "height", "color", "text_color"}
 
 

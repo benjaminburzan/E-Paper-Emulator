@@ -28,7 +28,7 @@ jobs:
 
       - name: Lint with flake8
         run: |
-          flake8 epd_emulator/ --max-line-length=120 --count --show-source --statistics
+          flake8 epaper_emulator/ --max-line-length=120 --count --show-source --statistics
 
       - name: Run tests
         run: |

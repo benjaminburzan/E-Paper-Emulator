@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "epd-emulator"
+name = "epaper-emulator"
 version = "1.0.0"
 description = "Emulator for Waveshare E-Paper Display (EPD) screens"
 readme = "README.md"
@@ -36,15 +36,15 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/benjaminburzan/EPD-Emulator"
-Repository = "https://github.com/benjaminburzan/EPD-Emulator"
-Issues = "https://github.com/benjaminburzan/EPD-Emulator/issues"
+Homepage = "https://github.com/benjaminburzan/E-Paper-Emulator"
+Repository = "https://github.com/benjaminburzan/E-Paper-Emulator"
+Issues = "https://github.com/benjaminburzan/E-Paper-Emulator/issues"
 
 [tool.setuptools.packages.find]
-include = ["epd_emulator*"]
+include = ["epaper_emulator*"]
 
 [tool.setuptools.package-data]
-epd_emulator = ["config/*.json"]
+epaper_emulator = ["config/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

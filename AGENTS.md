@@ -4,13 +4,13 @@ Instructions for AI coding agents (Claude Code, Copilot, Cursor, etc.) working o
 
 ## Project Context
 
-EPD Emulator simulates Waveshare E-Paper Display screens. It provides a drop-in `EPD` class replacement for the Waveshare Python library, rendering to Tkinter or Flask instead of hardware.
+E-Paper Emulator simulates Waveshare E-Paper Display screens. It provides a drop-in `EPD` class replacement for the Waveshare Python library, rendering to Tkinter or Flask instead of hardware.
 
 ## Architecture
 
-- **Single-file core**: All logic lives in `epd_emulator/epdemulator.py` as the `EPD` class. Keep it that way unless there's a strong reason to split.
+- **Single-file core**: All logic lives in `epaper_emulator/emulator.py` as the `EPD` class. Keep it that way unless there's a strong reason to split.
 - **Lazy imports**: `tkinter`, `ImageTk`, `Flask`, and `webbrowser` are imported inside `init_tkinter()` / `init_flask()`, not at module level. This allows testing without Tk installed.
-- **Config-driven models**: Display models are JSON files in `epd_emulator/config/`. Each has `name`, `width`, `height`, `color`, `text_color`.
+- **Config-driven models**: Display models are JSON files in `epaper_emulator/config/`. Each has `name`, `width`, `height`, `color`, `text_color`.
 
 ## Conventions
 
@@ -32,12 +32,12 @@ pip install -e ".[dev]"
 
 ```bash
 python -m pytest tests/ -v          # All tests must pass
-flake8 epd_emulator/ --max-line-length=120  # No lint errors
+flake8 epaper_emulator/ --max-line-length=120  # No lint errors
 ```
 
 ### Adding a Display Model
 
-1. Create `epd_emulator/config/<model>.json`
+1. Create `epaper_emulator/config/<model>.json`
 2. Add to the supported displays table in `README.md`
 3. The parametrized tests in `tests/test_config.py` will automatically pick it up
 

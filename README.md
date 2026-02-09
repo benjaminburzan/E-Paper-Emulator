@@ -1,4 +1,4 @@
-# EPD Emulator
+# E-Paper Emulator
 
 [![Python 3](https://img.shields.io/badge/Python-3-blue.svg)](https://www.python.org/)
 [![Pillow](https://img.shields.io/badge/Pillow-Image%20Processing-yellow.svg)](https://python-pillow.org/)
@@ -37,8 +37,8 @@ A drop-in replacement for the Waveshare E-Paper Display (EPD) Python library tha
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/benjaminburzan/EPD-Emulator.git
-cd EPD-Emulator
+git clone https://github.com/benjaminburzan/E-Paper-Emulator.git
+cd E-Paper-Emulator
 ```
 
 ### 2. Install Dependencies
@@ -67,10 +67,10 @@ The demo script shows how to initialize the emulator, draw shapes and text, and 
 ### Use in Your Own Project
 
 ```python
-from epd_emulator import epdemulator
+from epaper_emulator.emulator import EPD
 
 # Initialize with your preferred settings
-epd = epdemulator.EPD(
+epd = EPD(
     config_file="epd2in13",
     use_tkinter=False,
     use_color=True,
@@ -110,7 +110,7 @@ All EPD parameters are set when initializing the emulator:
 
 ### EPD Model Configuration
 
-Each display model is defined by a JSON file in `epd_emulator/config/`:
+Each display model is defined by a JSON file in `epaper_emulator/config/`:
 
 ```json
 {
@@ -153,24 +153,24 @@ Each display model is defined by a JSON file in `epd_emulator/config/`:
 ## File Structure
 
 ```
-EPD-Emulator/
-├── epd_emulator/               # Main package
-│   ├── __init__.py             # Package entry point
-│   ├── epdemulator.py          # Core EPD emulator class
-│   └── config/                 # EPD model JSON configurations
+E-Paper-Emulator/
+├── epaper_emulator/              # Main package
+│   ├── __init__.py               # Package entry point
+│   ├── emulator.py               # Core EPD emulator class
+│   └── config/                   # EPD model JSON configurations
 │       ├── epd1in54.json
 │       ├── epd2in13.json
 │       ├── ...
 │       └── epd12in48.json
-├── tests/                      # Test suite
+├── tests/                        # Test suite
 │   ├── __init__.py
 │   └── test_config.py
-├── .github/                    # GitHub templates and workflows
-├── demo.py                     # Demo script
-├── pyproject.toml              # Python packaging configuration
-├── CONTRIBUTING.md             # Contribution guide
-├── SECURITY.md                 # Security policy
-└── LICENSE                     # MIT License
+├── .github/                      # GitHub templates and workflows
+├── demo.py                       # Demo script
+├── pyproject.toml                # Python packaging configuration
+├── CONTRIBUTING.md               # Contribution guide
+├── SECURITY.md                   # Security policy
+└── LICENSE                       # MIT License
 ```
 
 

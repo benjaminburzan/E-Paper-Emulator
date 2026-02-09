@@ -1,14 +1,14 @@
-# Contributing to EPD-Emulator
+# Contributing to E-Paper-Emulator
 
-Thank you for your interest in contributing to EPD-Emulator! This guide will help you get started.
+Thank you for your interest in contributing to E-Paper-Emulator! This guide will help you get started.
 
 ## Getting Started
 
 1. **Fork** the repository on GitHub
 2. **Clone** your fork locally:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/EPD-Emulator.git
-   cd EPD-Emulator
+   git clone https://github.com/YOUR-USERNAME/E-Paper-Emulator.git
+   cd E-Paper-Emulator
    ```
 3. **Install** dependencies:
    ```bash
@@ -31,7 +31,7 @@ Thank you for your interest in contributing to EPD-Emulator! This guide will hel
    ```
 4. Run the linter:
    ```bash
-   flake8 epd_emulator/
+   flake8 epaper_emulator/
    ```
 
 ### Submitting a Pull Request
@@ -51,7 +51,7 @@ Thank you for your interest in contributing to EPD-Emulator! This guide will hel
 
 To add support for a new Waveshare display:
 
-1. Create a JSON config file in `epd_emulator/config/`:
+1. Create a JSON config file in `epaper_emulator/config/`:
    ```json
    {
        "name": "epdXinY",
@@ -68,11 +68,11 @@ To add support for a new Waveshare display:
 
 ## Code Style
 
-- Follow existing patterns in `epdemulator.py`
+- Follow existing patterns in `emulator.py`
 - Use [Pillow](https://python-pillow.org/) for all image operations
 - Keep the single-class architecture unless there's a strong reason to split
 - Maintain API compatibility with the Waveshare Python EPD library
 
 ## Questions?
 
-Open a [GitHub Discussion](https://github.com/benjaminburzan/EPD-Emulator/discussions) for questions that aren't bug reports or feature requests.
+Open a [GitHub Discussion](https://github.com/benjaminburzan/E-Paper-Emulator/discussions) for questions that aren't bug reports or feature requests.

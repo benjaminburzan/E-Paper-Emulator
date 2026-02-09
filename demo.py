@@ -1,4 +1,4 @@
-from epd_emulator import epdemulator
+from epaper_emulator.emulator import EPD
 from PIL import ImageFont
 import time
 
@@ -11,7 +11,7 @@ refreshdelay = 5  # Refresh delay in seconds
 #   update_interval: refresh delay in seconds
 #   reverse_orientation: True to swap width/height
 
-epd = epdemulator.EPD(
+epd = EPD(
     config_file="epd2in13",
     use_tkinter=False,
     use_color=True,

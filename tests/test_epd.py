@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 from PIL import Image, ImageFont
-from epd_emulator.epdemulator import EPD
+from epaper_emulator.emulator import EPD
 
 
 def make_epd(**kwargs):
