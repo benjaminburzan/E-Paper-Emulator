@@ -7,6 +7,8 @@
 
 A drop-in replacement for the Waveshare E-Paper Display (EPD) Python library that renders to a Tkinter window or Flask web server instead of hardware. Develop, test, and demo e-paper UIs on any machine — no display module required. Supports 21+ models in color and monochrome.
 
+![E-Paper Emulator Demo](screenshot.png)
+
 ## Table of Contents
 
 - [Quick Start](#quick-start)
