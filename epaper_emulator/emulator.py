@@ -91,6 +91,7 @@ class EPD:
                         #screenImage {{
                             width: 50%;
                             height: auto;
+                            border: 2px solid #333;
                         }}
                     </style>
                     <script>

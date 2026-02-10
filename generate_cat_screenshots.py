@@ -261,6 +261,13 @@ def create_browser_screenshot(cat_img, output_path):
     )
     paste_x = (browser_w - scaled_w) // 2
     paste_y = chrome_h + padding
+    # Border around display image
+    border_color = (51, 51, 51)
+    draw.rectangle(
+        [(paste_x - 2, paste_y - 2),
+         (paste_x + scaled_w + 1, paste_y + scaled_h + 1)],
+        outline=border_color, width=2
+    )
     img.paste(cat_scaled, (paste_x, paste_y))
 
     img.save(output_path)
