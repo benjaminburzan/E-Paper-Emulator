@@ -7,14 +7,18 @@
 
 A drop-in replacement for the Waveshare E-Paper Display (EPD) Python library that renders to a Tkinter window or Flask web server instead of hardware. Develop, test, and demo e-paper UIs on any machine — no display module required. Supports 21+ models in color and monochrome.
 
+- **Drop-in Replacement**: Use the same API as the Waveshare EPD library for seamless development
+- **21+ EPD Models**: Pre-configured JSON files for a wide range of Waveshare displays
+- **Dual Rendering Modes**: Tkinter (native GUI window) or Flask (web-based, accessible via browser)
+- **Color and Monochrome**: Simulate both color and monochrome e-paper displays
+- **Drawing API**: Text, rectangles, lines, ellipses, and image pasting
+
 | Flask (Browser) | Tkinter (Desktop) |
 |:---:|:---:|
 | ![Flask](screenshots/screenshot_flask.png) | ![Tkinter](screenshots/screenshot_tkinter.png) |
 
 ## Table of Contents
 
-- [Quick Start](#quick-start)
-- [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
@@ -22,16 +26,6 @@ A drop-in replacement for the Waveshare E-Paper Display (EPD) Python library tha
 - [File Structure](#file-structure)
 - [Credits](#credits)
 - [License](#license)
-
-## Features
-
-- **Dual Rendering Modes**: Tkinter (native GUI window) or Flask (web-based, accessible via browser)
-- **Color and Monochrome**: Simulate both color and monochrome e-paper displays
-- **21+ EPD Models**: Pre-configured JSON files for a wide range of Waveshare displays
-- **Display Orientation**: Normal and reverse orientation support
-- **Configurable Refresh Rate**: Adjustable update intervals for the simulation
-- **Drawing API**: Text, rectangles, lines, ellipses, and image pasting
-- **Drop-in Replacement**: Use the same API as the Waveshare EPD library for seamless development
 
 
 ## Installation
