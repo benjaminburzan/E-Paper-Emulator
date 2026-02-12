@@ -103,6 +103,7 @@ All EPD parameters are set when initializing the emulator:
 | `use_color` | `bool` | `True` for RGB color, `False` for monochrome | `False` |
 | `update_interval` | `int` | Refresh delay in seconds | `2` |
 | `reverse_orientation` | `bool` | Swap width and height | `False` |
+| `port` | `int` | Flask server port number | `5000` |
 
 ### EPD Model Configuration
 
@@ -160,10 +161,14 @@ E-Paper-Emulator/
 │       └── epd12in48.json
 ├── tests/                        # Test suite
 │   ├── __init__.py
-│   └── test_config.py
+│   ├── test_config.py
+│   └── test_epd.py
+├── screenshots/                  # Generated screenshot assets
+│   └── generate_cat_screenshots.py
 ├── .github/                      # GitHub templates and workflows
 ├── demo.py                       # Demo script
 ├── pyproject.toml                # Python packaging configuration
+├── AGENTS.md                     # Project context for AI agents
 ├── CONTRIBUTING.md               # Contribution guide
 ├── SECURITY.md                   # Security policy
 └── LICENSE                       # MIT License
