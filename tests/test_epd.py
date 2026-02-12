@@ -45,7 +45,7 @@ class TestEPDInit:
 
 
 class TestClear:
-    def test_clear_with_white(self):
+    def test_clear_sets_all_pixels(self):
         epd = make_epd(use_color=True)
         epd.Clear("red")
         # After clearing with red, all pixels should be red
@@ -72,19 +72,29 @@ class TestDrawingMethods:
     def test_draw_rectangle(self):
         epd = make_epd()
         epd.draw_rectangle((0, 0, 50, 50), outline=0, fill=0)
+        # Center pixel inside the filled rectangle should be black
+        assert epd.image.getpixel((25, 25)) == 0
 
     def test_draw_line(self):
         epd = make_epd()
         epd.draw_line((0, 0, 50, 50), fill=0, width=1)
+        # A pixel on the diagonal should be black
+        assert epd.image.getpixel((25, 25)) == 0
 
     def test_draw_ellipse(self):
         epd = make_epd()
         epd.draw_ellipse((10, 10, 40, 40), outline=0, fill=0)
+        # Center of the ellipse should be black
+        assert epd.image.getpixel((25, 25)) == 0
 
     def test_draw_text(self):
         epd = make_epd()
         font = ImageFont.load_default()
+        before = epd.image.tobytes()
         epd.draw_text((10, 10), "Hello", font=font, fill=0)
+        after = epd.image.tobytes()
+        # Drawing text should modify the image
+        assert before != after
 
 
 class TestPasteImage:
@@ -92,3 +102,52 @@ class TestPasteImage:
         epd = make_epd()
         patch_img = Image.new("1", (20, 20), 0)
         epd.paste_image(patch_img, box=(0, 0))
+        # Pasted region should be black
+        assert epd.image.getpixel((10, 10)) == 0
+
+    def test_paste_image_with_mask(self):
+        epd = make_epd()
+        patch_img = Image.new("1", (20, 20), 0)
+        mask = Image.new("1", (20, 20), 255)
+        epd.paste_image(patch_img, box=(0, 0), mask=mask)
+        assert epd.image.getpixel((10, 10)) == 0
+
+
+class TestUpdateImageBytes:
+    def test_produces_valid_png(self):
+        epd = make_epd()
+        epd.update_image_bytes()
+        buf = epd.image_bytes
+        # PNG files start with the PNG signature
+        assert buf.getvalue()[:4] == b'\x89PNG'
+
+    def test_display_updates_image_bytes(self):
+        epd = make_epd()
+        epd.update_image_bytes()
+        before = epd.image_bytes.getvalue()
+        # Draw something, then call display (Flask path)
+        epd.draw.rectangle((0, 0, 50, 50), fill=0)
+        epd.display(epd.getbuffer(epd.image))
+        after = epd.image_bytes.getvalue()
+        assert before != after
+
+
+class TestFlaskRoutes:
+    def test_index_returns_html(self):
+        epd = make_epd()
+        epd.update_image_bytes()
+        epd.init_flask()
+        client = epd.app.test_client()
+        response = client.get('/')
+        assert response.status_code == 200
+        assert b'screenImage' in response.data
+
+    def test_screen_png_returns_image(self):
+        epd = make_epd()
+        epd.update_image_bytes()
+        epd.init_flask()
+        client = epd.app.test_client()
+        response = client.get('/screen.png')
+        assert response.status_code == 200
+        assert response.content_type == 'image/png'
+        assert response.data[:4] == b'\x89PNG'
