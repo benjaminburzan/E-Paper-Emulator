@@ -4,7 +4,6 @@ import io
 import os
 import threading
 import time
-import traceback
 
 currentdir = os.path.dirname(os.path.realpath(__file__))
 
@@ -28,10 +27,12 @@ class EPD:
         )
         self.use_tkinter = use_tkinter
         self.update_interval = update_interval
+        self._lock = threading.Lock()
 
         if self.use_tkinter:
             self.init_tkinter()
         else:
+            self.update_image_bytes()
             self.init_flask()
             self.start_image_update_loop()
 
@@ -111,14 +112,11 @@ class EPD:
 
         @self.app.route('/screen.png')
         def display_image():
-            try:
-                return send_file(
-                    io.BytesIO(self.image_bytes.getvalue()),
-                    mimetype='image/png'
-                )
-            except Exception:
-                traceback.print_exc()
-                return "Internal Server Error", 500
+            buf = self.image_bytes
+            return send_file(
+                io.BytesIO(buf.getvalue()),
+                mimetype='image/png'
+            )
 
         threading.Thread(target=self.run_flask).start()
 
@@ -127,8 +125,10 @@ class EPD:
         self.app.run(port=5000, debug=False, use_reloader=False)
 
     def update_image_bytes(self):
-        self.image_bytes = io.BytesIO()
-        self.image.save(self.image_bytes, format='PNG')
+        buf = io.BytesIO()
+        with self._lock:
+            self.image.save(buf, format='PNG')
+        self.image_bytes = buf
 
     def start_image_update_loop(self):
         def update_loop():
@@ -142,10 +142,11 @@ class EPD:
         print("EPD initialized")
 
     def Clear(self, color):
-        self.image = Image.new(
-            self.image_mode, (self.width, self.height), color
-        )
-        self.draw = ImageDraw.Draw(self.image)
+        with self._lock:
+            self.image = Image.new(
+                self.image_mode, (self.width, self.height), color
+            )
+            self.draw = ImageDraw.Draw(self.image)
         self.display(self.getbuffer(self.image))
         print("Screen cleared")
 
@@ -180,21 +181,26 @@ class EPD:
         return ImageDraw.Draw(self.image)
 
     def draw_text(self, position, text, font, fill):
-        self.draw.text(position, text, font=font, fill=fill)
+        with self._lock:
+            self.draw.text(position, text, font=font, fill=fill)
         self.display(self.getbuffer(self.image))
 
     def draw_rectangle(self, xy, outline=None, fill=None):
-        self.draw.rectangle(xy, outline=outline, fill=fill)
+        with self._lock:
+            self.draw.rectangle(xy, outline=outline, fill=fill)
         self.display(self.getbuffer(self.image))
 
     def draw_line(self, xy, fill=None, width=0):
-        self.draw.line(xy, fill=fill, width=width)
+        with self._lock:
+            self.draw.line(xy, fill=fill, width=width)
         self.display(self.getbuffer(self.image))
 
     def draw_ellipse(self, xy, outline=None, fill=None):
-        self.draw.ellipse(xy, outline=outline, fill=fill)
+        with self._lock:
+            self.draw.ellipse(xy, outline=outline, fill=fill)
         self.display(self.getbuffer(self.image))
 
     def paste_image(self, image, box=None, mask=None):
-        self.image.paste(image, box, mask)
+        with self._lock:
+            self.image.paste(image, box, mask)
         self.display(self.getbuffer(self.image))
