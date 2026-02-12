@@ -8,6 +8,22 @@ import time
 currentdir = os.path.dirname(os.path.realpath(__file__))
 
 
+class _BatchContext:
+    """Context manager that suppresses display() calls until the block exits."""
+
+    def __init__(self, epd):
+        self._epd = epd
+
+    def __enter__(self):
+        self._epd._batching = True
+        return self._epd
+
+    def __exit__(self, *exc):
+        self._epd._batching = False
+        self._epd.display(self._epd.getbuffer(self._epd.image))
+        return False
+
+
 class EPD:
     def __init__(self, config_file="epd2in13", use_tkinter=False,
                  use_color=False, update_interval=2,
@@ -29,6 +45,7 @@ class EPD:
         self.update_interval = update_interval
         self.port = port
         self._lock = threading.Lock()
+        self._batching = False
 
         if self.use_tkinter:
             self.init_tkinter()
@@ -81,33 +98,33 @@ class EPD:
 
         @self.app.route('/')
         def index():
-            return render_template_string(f'''
+            return render_template_string('''
                 <!DOCTYPE html>
                 <html lang="en">
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <style>
-                        #screenImage {{
+                        #screenImage {
                             width: 50%;
                             height: auto;
                             border: 2px solid #333;
-                        }}
+                        }
                     </style>
                     <script>
-                        function updateImage() {{
+                        function updateImage() {
                             var image = document.getElementById("screenImage");
                             image.src = "screen.png?t=" + new Date().getTime();
-                        }}
+                        }
 
-                        setInterval(updateImage, {int(self.update_interval * 1000)});
+                        setInterval(updateImage, {{ update_ms }});
                     </script>
                 </head>
                 <body onload="updateImage()">
                     <img id="screenImage" src="screen.png" alt="EPD Emulator">
                 </body>
                 </html>
-            ''')
+            ''', update_ms=int(self.update_interval * 1000))
 
         @self.app.route('/screen.png')
         def display_image():
@@ -183,27 +200,43 @@ class EPD:
     def get_draw_object(self):
         return ImageDraw.Draw(self.image)
 
+    def batch(self):
+        """Context manager to batch multiple drawing operations into a single display update.
+
+        Usage:
+            with epd.batch():
+                epd.draw_rectangle((0, 0, 50, 50), fill=0)
+                epd.draw_text((10, 10), "Hello", font=font, fill=0)
+            # display() is called once when the block exits
+        """
+        return _BatchContext(self)
+
     def draw_text(self, position, text, font, fill):
         with self._lock:
             self.draw.text(position, text, font=font, fill=fill)
-        self.display(self.getbuffer(self.image))
+        if not self._batching:
+            self.display(self.getbuffer(self.image))
 
     def draw_rectangle(self, xy, outline=None, fill=None):
         with self._lock:
             self.draw.rectangle(xy, outline=outline, fill=fill)
-        self.display(self.getbuffer(self.image))
+        if not self._batching:
+            self.display(self.getbuffer(self.image))
 
     def draw_line(self, xy, fill=None, width=0):
         with self._lock:
             self.draw.line(xy, fill=fill, width=width)
-        self.display(self.getbuffer(self.image))
+        if not self._batching:
+            self.display(self.getbuffer(self.image))
 
     def draw_ellipse(self, xy, outline=None, fill=None):
         with self._lock:
             self.draw.ellipse(xy, outline=outline, fill=fill)
-        self.display(self.getbuffer(self.image))
+        if not self._batching:
+            self.display(self.getbuffer(self.image))
 
     def paste_image(self, image, box=None, mask=None):
         with self._lock:
             self.image.paste(image, box, mask)
-        self.display(self.getbuffer(self.image))
+        if not self._batching:
+            self.display(self.getbuffer(self.image))
