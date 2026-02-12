@@ -11,7 +11,7 @@ currentdir = os.path.dirname(os.path.realpath(__file__))
 class EPD:
     def __init__(self, config_file="epd2in13", use_tkinter=False,
                  use_color=False, update_interval=2,
-                 reverse_orientation=False):
+                 reverse_orientation=False, port=5000):
         config_path = os.path.join(currentdir, 'config', f'{config_file}.json')
         self.load_config(config_path)
 
@@ -27,6 +27,7 @@ class EPD:
         )
         self.use_tkinter = use_tkinter
         self.update_interval = update_interval
+        self.port = port
         self._lock = threading.Lock()
 
         if self.use_tkinter:
@@ -76,8 +77,6 @@ class EPD:
 
     def init_flask(self):
         from flask import Flask, render_template_string, send_file
-        import webbrowser
-        self.webbrowser = webbrowser
         self.app = Flask(__name__)
 
         @self.app.route('/')
@@ -118,11 +117,15 @@ class EPD:
                 mimetype='image/png'
             )
 
-        threading.Thread(target=self.run_flask).start()
+        threading.Thread(target=self.run_flask, daemon=True).start()
 
     def run_flask(self):
-        self.webbrowser.open("http://127.0.0.1:5000/")
-        self.app.run(port=5000, debug=False, use_reloader=False)
+        import webbrowser
+        timer = threading.Timer(1.0, webbrowser.open,
+                                args=[f"http://127.0.0.1:{self.port}/"])
+        timer.daemon = True
+        timer.start()
+        self.app.run(port=self.port, debug=False, use_reloader=False)
 
     def update_image_bytes(self):
         buf = io.BytesIO()
@@ -150,7 +153,7 @@ class EPD:
         self.display(self.getbuffer(self.image))
         print("Screen cleared")
 
-    def display(self, image_buffer):
+    def display(self, image_buffer):  # image_buffer accepted for Waveshare API compatibility
         if self.use_tkinter:
             self.tk_image = self.ImageTk.PhotoImage(self.image)
             self.canvas.itemconfig(
@@ -163,7 +166,7 @@ class EPD:
     def displayPartial(self, image_buffer):
         self.display(image_buffer)
 
-    def get_frame_buffer(self, draw):
+    def get_frame_buffer(self, draw):  # draw accepted for Waveshare API compatibility
         return self.getbuffer(self.image)
 
     def getbuffer(self, image):

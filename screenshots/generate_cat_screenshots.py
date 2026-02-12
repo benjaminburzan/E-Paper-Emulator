@@ -136,16 +136,8 @@ def draw_funny_cat(draw, W, H):
             )
 
     # === TEXT ===
-    try:
-        font_title = ImageFont.truetype(
-            "/System/Library/Fonts/Helvetica.ttc", 22
-        )
-        font_sub = ImageFont.truetype(
-            "/System/Library/Fonts/Helvetica.ttc", 16
-        )
-    except Exception:
-        font_title = ImageFont.load_default()
-        font_sub = ImageFont.load_default()
+    font_title = load_font(22)
+    font_sub = load_font(16)
 
     draw.text(
         (W // 2 - 110, 12), "E-Paper Emulator",
@@ -166,12 +158,12 @@ def create_cat_image():
 
 
 def load_font(size):
-    """Load Helvetica or fall back to default."""
+    """Load Helvetica (macOS) or fall back to default font on other platforms."""
     try:
         return ImageFont.truetype(
             "/System/Library/Fonts/Helvetica.ttc", size
         )
-    except Exception:
+    except OSError:
         return ImageFont.load_default()
 
 
@@ -351,8 +343,7 @@ def create_tkinter_screenshot(cat_img, output_path):
 
 
 def main():
-    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "screenshots")
+    out_dir = os.path.dirname(os.path.abspath(__file__))
     os.makedirs(out_dir, exist_ok=True)
 
     cat_img = create_cat_image()

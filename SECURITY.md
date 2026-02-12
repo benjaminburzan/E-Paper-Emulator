@@ -12,7 +12,7 @@ If you discover a security vulnerability in EPD-Emulator, please report it respo
 
 **Do not open a public GitHub issue for security vulnerabilities.**
 
-Instead, please email the maintainer directly or use [GitHub's private vulnerability reporting](https://github.com/benjaminburzan/EPD-Emulator/security/advisories/new).
+Instead, please email the maintainer directly or use [GitHub's private vulnerability reporting](https://github.com/benjaminburzan/E-Paper-Emulator/security/advisories/new).
 
 ### What to include
 
